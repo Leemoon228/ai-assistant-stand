@@ -1,0 +1,158 @@
+name: Component release
+
+on:
+  workflow_call:
+    inputs:
+      images:
+        description: One SERVICE=CONTEXT per line
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    name: Build and publish component
+    if: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    permissions:
+      contents: write
+    concurrency:
+      group: image-release-${{ github.repository }}-${{ github.ref }}
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Build images, scan dependencies and package release
+        env:
+          COMPONENT_IMAGES: ${{ inputs.images }}
+        run: |
+          python - <<'PY'
+          """Build component images and produce the common GitHub Release asset format."""
+
+          import gzip
+          import hashlib
+          import json
+          import os
+          from pathlib import Path
+          import re
+          import shutil
+          import subprocess
+          from datetime import datetime, timezone
+
+
+          def run(*command):
+              return subprocess.run(command, check=True, text=True, stdout=subprocess.PIPE).stdout
+
+
+          def checksum(path):
+              with path.open("rb") as stream:
+                  return hashlib.file_digest(stream, "sha256").hexdigest()
+
+
+          specifications = os.environ["COMPONENT_IMAGES"].splitlines()
+          if not specifications:
+              raise ValueError("At least one image is required")
+
+          tag = os.environ["GITHUB_REF_NAME"]
+          revision = os.environ["GITHUB_SHA"]
+          repository = os.environ["GITHUB_REPOSITORY"]
+          if not re.fullmatch(r"v\d+\.\d+\.\d+", tag):
+              raise ValueError("Release tags must have the form v1.2.3")
+          if run("git", "rev-parse", "HEAD").strip() != revision:
+              raise ValueError("GITHUB_SHA must identify the checked-out commit")
+          output = (Path(os.environ["RUNNER_TEMP"]) / "image-release").resolve()
+          output.mkdir(parents=True, exist_ok=False)
+          scanner = "aquasec/trivy:0.76.2"
+          cache = output.parent / "trivy-image-cache"
+          cache.mkdir(exist_ok=True)
+          scan = ["docker", "run", "--rm", "-v", f"{output}:/release",
+                  "-v", f"{cache}:/root/.cache/trivy", scanner]
+          images = []
+          compose = ["services:"]
+          for specification in specifications:
+              service, separator, context = specification.partition("=")
+              if not separator or not re.fullmatch(r"[a-z][a-z0-9-]*", service):
+                  raise ValueError("Each image must be SERVICE=CONTEXT")
+              if any(item["service"] == service for item in images):
+                  raise ValueError(f"Duplicate service: {service}")
+              image = f"ai-assistant-{service}:{tag}"
+              subprocess.run([
+                  "docker", "build", "--platform", "linux/amd64",
+                  "--label", f"org.opencontainers.image.revision={revision}",
+                  "--label", f"org.opencontainers.image.source=https://github.com/{repository}",
+                  "--label", f"org.opencontainers.image.version={tag}",
+                  "--tag", image, context,
+              ], check=True)
+              metadata = json.loads(run("docker", "image", "inspect", image))[0]
+              if (metadata["Os"], metadata["Architecture"]) != ("linux", "amd64"):
+                  raise ValueError(f"Unexpected image platform for {service}")
+              raw = output / f"{service}.tar"
+              archive = output / f"{service}-linux-amd64.tar.gz"
+              subprocess.run(["docker", "image", "save", "--output", str(raw), image], check=True)
+              with raw.open("rb") as source, gzip.open(archive, "wb", compresslevel=1) as target:
+                  shutil.copyfileobj(source, target)
+              raw.unlink()
+              prefix = "" if len(specifications) == 1 else f"{service}-"
+              vulnerabilities = f"{prefix}vulnerabilities.json"
+              sbom = f"{prefix}dependencies.cdx.json"
+              subprocess.run(scan + [
+                  "image", "--input", f"/release/{archive.name}", "--timeout", "15m",
+                  "--no-progress", "--scanners", "vuln", "--list-all-pkgs",
+                  "--format", "json", "--output", f"/release/{vulnerabilities}",
+              ], check=True)
+              subprocess.run(scan + [
+                  "convert", "--format", "cyclonedx", "--output", f"/release/{sbom}",
+                  f"/release/{vulnerabilities}",
+              ], check=True)
+              images.append({
+                  "service": service, "image": image, "image_id": metadata["Id"],
+                  "archive": archive.name, "archive_sha256": checksum(archive),
+                  "sbom": sbom, "vulnerabilities": vulnerabilities,
+              })
+              # The ML repository uses ai-assistant as its standalone Compose service name.
+              compose_service = "ai-assistant" if service == "ml" else service
+              compose.extend([f"  {compose_service}:", "    build: !reset null",
+                              f"    image: {image}", "    pull_policy: never"])
+          (output / "compose.image.yml").write_text("\n".join(compose) + "\n", encoding="utf-8")
+          manifest = {
+              "schema_version": 1, "repository": repository, "tag": tag,
+              "revision": revision, "platform": "linux/amd64",
+              "created_at": datetime.now(timezone.utc).isoformat(),
+              "scanner": scanner, "vulnerability_policy": "report-only", "images": images,
+          }
+          (output / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
+          notes = [f"# {repository} {tag}", "", f"Source commit `{revision}`.", "",
+                   "Linux amd64 Docker archives, image dependency SBOMs and vulnerability reports.",
+                   "Findings are retained for review. The current vulnerability policy is report-only.", "",
+                   "Load each image with docker image load -i ARCHIVE.",
+                   "On an existing stand, append compose.image.yml to the Compose command.",
+                   "The complete local stand is published at https://github.com/Leemoon228/ai-assistant-stand/releases."]
+          (output / "README.md").write_text("\n".join(notes) + "\n", encoding="utf-8")
+          sums = [f"{checksum(path)}  {path.name}" for path in sorted(output.iterdir())]
+          (output / "SHA256SUMS").write_text("\n".join(sums) + "\n", encoding="utf-8")
+          PY
+      - name: Publish complete release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        shell: bash
+        run: |
+          output="$RUNNER_TEMP/image-release"
+          if draft=$(gh release view "$GITHUB_REF_NAME" --json isDraft --jq '.isDraft' 2>/dev/null); then
+            if [ "$draft" = false ]; then
+              echo "Release $GITHUB_REF_NAME is already published."
+              exit 0
+            fi
+          else
+            gh release create "$GITHUB_REF_NAME" --verify-tag --draft \
+              --title "$GITHUB_REF_NAME" --notes-file "$output/README.md"
+          fi
+          gh release upload "$GITHUB_REF_NAME" "$output"/* --clobber
+          gh release edit "$GITHUB_REF_NAME" --draft=false --latest
