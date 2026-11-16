@@ -30,7 +30,9 @@ foreach ($component in $manifest.components.PSObject.Properties) {
         docker image load --input $archive
         if ($LASTEXITCODE -ne 0) { throw "Cannot load $archive" }
         $imageId = docker image inspect --format '{{.Id}}' $image.image
-        if ($LASTEXITCODE -ne 0 -or $imageId -ne $image.image_id) {
+        $allowedIds = @($image.image_id)
+        if ($image.load_ids) { $allowedIds = @($image.load_ids) }
+        if ($LASTEXITCODE -ne 0 -or $imageId -notin $allowedIds) {
             throw "Unexpected image identity for $($image.service)"
         }
     }

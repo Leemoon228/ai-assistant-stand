@@ -53,8 +53,8 @@ def main():
                             str(stand / "components" / component / image["archive"])], check=True)
             identity = subprocess.check_output(
                 ["docker", "image", "inspect", "--format", "{{.Id}}", image["image"]], text=True).strip()
-            if identity != image["image_id"]:
-                raise ValueError(f"Unexpected image identity for {image['service']}")
+            if identity not in image.get("load_ids", [image["image_id"]]):
+                raise ValueError(f"Unexpected image identity for {image['service']}: {identity}")
     environment = dict(os.environ, SSO_SHARED_SECRET=secrets.token_hex(32),
                        GRAFANA_ADMIN_PASSWORD=secrets.token_hex(32),
                        FRONTEND_PORT="0", BACKEND_PORT="0", ML_PORT="0", MARKETPLACE_PORT="0")

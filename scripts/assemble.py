@@ -7,6 +7,7 @@ import os
 from pathlib import Path
 import re
 import shutil
+import tarfile
 from urllib.request import Request, urlopen
 
 
@@ -46,6 +47,43 @@ def parse_checksums(data):
 def verify(data, digest, name):
     if hashlib.sha256(data).hexdigest() != digest:
         raise ValueError(f"Checksum mismatch: {name}")
+
+
+def loaded_image_ids(archive, image):
+    """Allow config and OCI manifest IDs for the same checksum-verified image."""
+    with tarfile.open(archive, "r:gz") as contents:
+        entries = json.load(contents.extractfile("manifest.json"))
+        entries = [entry for entry in entries if image["image"] in (entry.get("RepoTags") or [])]
+        if len(entries) != 1:
+            raise ValueError(f"Archive must contain exactly one {image['image']}")
+        raw_config = contents.extractfile(entries[0]["Config"]).read()
+        config_id = "sha256:" + hashlib.sha256(raw_config).hexdigest()
+        config = json.loads(raw_config)
+        if (config.get("os"), config.get("architecture")) != ("linux", "amd64"):
+            raise ValueError("Unexpected archive image platform")
+
+        def matching_ids(descriptor):
+            digest = descriptor["digest"]
+            if not re.fullmatch(r"sha256:[0-9a-f]{64}", digest):
+                raise ValueError("Invalid OCI image digest")
+            document = contents.extractfile("blobs/sha256/" + digest[7:]).read()
+            verify(document, digest[7:], "OCI image descriptor")
+            metadata = json.loads(document)
+            if metadata.get("config", {}).get("digest") == config_id:
+                return {digest}
+            children = set()
+            for child in metadata.get("manifests", []):
+                children.update(matching_ids(child))
+            return children | {digest} if children else set()
+
+        identities = {config_id}
+        if "index.json" in contents.getnames():
+            index = json.load(contents.extractfile("index.json"))
+            for descriptor in index["manifests"]:
+                identities.update(matching_ids(descriptor))
+        if image["image_id"] not in identities:
+            raise ValueError(f"Archive image identity mismatch for {image['service']}")
+        return sorted(identities)
 
 
 def resolve():
@@ -115,6 +153,7 @@ def assemble(resolution, destination):
         sums = [f"{digest}  {name}" for name, digest in selected["checksums"].items()]
         (directory / "SHA256SUMS").write_text("\n".join(sums) + "\n", encoding="utf-8")
         for image in selected["manifest"]["images"]:
+            image["load_ids"] = loaded_image_ids(directory / image["archive"], image)
             variable = image["service"].upper().replace("-", "_") + "_IMAGE"
             environment, replacements = re.subn(
                 rf"(?m)^{variable}=.*$", f"{variable}={image['image']}", environment)
