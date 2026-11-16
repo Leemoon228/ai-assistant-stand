@@ -1,0 +1,184 @@
+{
+  "schema_version": 1,
+  "components": {
+    "frontend": {
+      "release_id": 447256646,
+      "release_url": "https://github.com/OlgaRhythm/ai-assistent-frontend/releases/tag/v0.1.0",
+      "manifest": {
+        "schema_version": 1,
+        "repository": "OlgaRhythm/ai-assistent-frontend",
+        "tag": "v0.1.0",
+        "revision": "074eb7086f92705a63214fe0e80ac23aff162f78",
+        "platform": "linux/amd64",
+        "created_at": "2026-11-16T15:55:14.888875+00:00",
+        "scanner": "aquasec/trivy:0.76.2",
+        "vulnerability_policy": "report-only",
+        "images": [
+          {
+            "service": "frontend",
+            "image": "ai-assistant-frontend:v0.1.0",
+            "image_id": "sha256:f70254b370f94f264bd0614aa7abb0d7aa296cb7a8989743d2703886aff6968b",
+            "archive": "frontend-linux-amd64.tar.gz",
+            "archive_sha256": "99b5e75ac0a7828c0c02948dd28ef7ba7c04a9261678cd55ebc1ffb285d0b469",
+            "sbom": "dependencies.cdx.json",
+            "vulnerabilities": "vulnerabilities.json"
+          }
+        ]
+      },
+      "checksums": {
+        "README.md": "3245cd974c3b0a770057d82a7b84d7dadddfc920f7f0ae531ef49ed9b9607647",
+        "compose.image.yml": "e6719d6c101db73af72c16c3bf3de5a3eccfead5530068ec5b468a5461a5de0b",
+        "dependencies.cdx.json": "36ead6130f167d07c01cb75da615e074b3d7f7f33997f3c0d41a418f2cb62587",
+        "frontend-linux-amd64.tar.gz": "99b5e75ac0a7828c0c02948dd28ef7ba7c04a9261678cd55ebc1ffb285d0b469",
+        "manifest.json": "95957016180e1bef4349862105028ac18855fb69948da29f15fa05d614c02f30",
+        "vulnerabilities.json": "633771389759a79a6b5b952e38a2e256dd729824f7aa4d1d3285549911932ca9"
+      },
+      "assets": {
+        "README.md": "https://github.com/OlgaRhythm/ai-assistent-frontend/releases/download/v0.1.0/README.md",
+        "compose.image.yml": "https://github.com/OlgaRhythm/ai-assistent-frontend/releases/download/v0.1.0/compose.image.yml",
+        "dependencies.cdx.json": "https://github.com/OlgaRhythm/ai-assistent-frontend/releases/download/v0.1.0/dependencies.cdx.json",
+        "frontend-linux-amd64.tar.gz": "https://github.com/OlgaRhythm/ai-assistent-frontend/releases/download/v0.1.0/frontend-linux-amd64.tar.gz",
+        "manifest.json": "https://github.com/OlgaRhythm/ai-assistent-frontend/releases/download/v0.1.0/manifest.json",
+        "vulnerabilities.json": "https://github.com/OlgaRhythm/ai-assistent-frontend/releases/download/v0.1.0/vulnerabilities.json"
+      }
+    },
+    "backend": {
+      "release_id": 447264607,
+      "release_url": "https://github.com/OlgaRhythm/Market_AI_assistent_backend/releases/tag/v0.1.0",
+      "manifest": {
+        "schema_version": 1,
+        "repository": "OlgaRhythm/Market_AI_assistent_backend",
+        "tag": "v0.1.0",
+        "revision": "f3c2241d60970d49b8db472184b21df11d94b542",
+        "platform": "linux/amd64",
+        "created_at": "2026-11-16T16:01:41.231151+00:00",
+        "scanner": "aquasec/trivy:0.76.2",
+        "vulnerability_policy": "report-only",
+        "images": [
+          {
+            "service": "backend",
+            "image": "ai-assistant-backend:v0.1.0",
+            "image_id": "sha256:8b6959796fcc63f32908381ef0e608b02d920f59de40145e4a6042a24de9eccf",
+            "archive": "backend-linux-amd64.tar.gz",
+            "archive_sha256": "08a17e029318a48671181a8dd433ca856b9e7e06e86b8137c197ce8a95e81f87",
+            "sbom": "dependencies.cdx.json",
+            "vulnerabilities": "vulnerabilities.json"
+          }
+        ]
+      },
+      "checksums": {
+        "README.md": "864e1dc06d6de2aa47c3d6a5b67928d0096b562f9cf3221f766d500737e1341f",
+        "backend-linux-amd64.tar.gz": "08a17e029318a48671181a8dd433ca856b9e7e06e86b8137c197ce8a95e81f87",
+        "compose.image.yml": "97e9d7ab9f41f52c1c2192d943ed992730cf9c9866eba5127ffd7d447677df5f",
+        "dependencies.cdx.json": "728114eefc2db098d6c403cb4f80fa8ef3b0efa1126e840880ccc5356c0f0f20",
+        "manifest.json": "bb0b95e5296a3402b7f4c030d59fb86f3b75332f4302b4187b34b7f2e93a8557",
+        "vulnerabilities.json": "f1e7c6e527ce419ededd6202849ffd90d09b0cbcad7a6c1d8aaabf1438c18f61"
+      },
+      "assets": {
+        "README.md": "https://github.com/OlgaRhythm/Market_AI_assistent_backend/releases/download/v0.1.0/README.md",
+        "backend-linux-amd64.tar.gz": "https://github.com/OlgaRhythm/Market_AI_assistent_backend/releases/download/v0.1.0/backend-linux-amd64.tar.gz",
+        "compose.image.yml": "https://github.com/OlgaRhythm/Market_AI_assistent_backend/releases/download/v0.1.0/compose.image.yml",
+        "dependencies.cdx.json": "https://github.com/OlgaRhythm/Market_AI_assistent_backend/releases/download/v0.1.0/dependencies.cdx.json",
+        "manifest.json": "https://github.com/OlgaRhythm/Market_AI_assistent_backend/releases/download/v0.1.0/manifest.json",
+        "vulnerabilities.json": "https://github.com/OlgaRhythm/Market_AI_assistent_backend/releases/download/v0.1.0/vulnerabilities.json"
+      }
+    },
+    "ml": {
+      "release_id": 447262415,
+      "release_url": "https://github.com/Leemoon228/ai-assistant/releases/tag/v0.1.0",
+      "manifest": {
+        "schema_version": 1,
+        "repository": "Leemoon228/ai-assistant",
+        "tag": "v0.1.0",
+        "revision": "08586fd370096b4c3794398d65c362afd6a3fba0",
+        "platform": "linux/amd64",
+        "created_at": "2026-11-16T15:59:56.902969+00:00",
+        "scanner": "aquasec/trivy:0.76.2",
+        "vulnerability_policy": "report-only",
+        "images": [
+          {
+            "service": "ml",
+            "image": "ai-assistant-ml:v0.1.0",
+            "image_id": "sha256:65a6a43cc50e735e8e905a62fc4ced56b8ae8a07ef43acc8d088cd6ad8c6d1b3",
+            "archive": "ml-linux-amd64.tar.gz",
+            "archive_sha256": "59688764e9d9cf0bf90a21b972b6c293fcc27b454dc8f697d4af3575661e6e55",
+            "sbom": "dependencies.cdx.json",
+            "vulnerabilities": "vulnerabilities.json"
+          }
+        ]
+      },
+      "checksums": {
+        "README.md": "cae9f4179176ecacf3cb84eb9e8c1dae1c17d62528812d125bcca2cfb33d5018",
+        "compose.image.yml": "7bc64c454b502a3ac6c231130382271811f40a8dfd646d1f8dca63a6657f1c17",
+        "dependencies.cdx.json": "873acb11cba735973925ac4b843bf667ad5c34a22708878b37f44793e2efe3ad",
+        "manifest.json": "b8dca7a71fe2887273b3248cdc0ba950e42e1465ffac43e1382b5646e234e7b2",
+        "ml-linux-amd64.tar.gz": "59688764e9d9cf0bf90a21b972b6c293fcc27b454dc8f697d4af3575661e6e55",
+        "vulnerabilities.json": "447620b7132854736f777b0bb9b34de5a9d558ccf9d6ed8e2ce13d65d5207bc5"
+      },
+      "assets": {
+        "README.md": "https://github.com/Leemoon228/ai-assistant/releases/download/v0.1.0/README.md",
+        "compose.image.yml": "https://github.com/Leemoon228/ai-assistant/releases/download/v0.1.0/compose.image.yml",
+        "dependencies.cdx.json": "https://github.com/Leemoon228/ai-assistant/releases/download/v0.1.0/dependencies.cdx.json",
+        "manifest.json": "https://github.com/Leemoon228/ai-assistant/releases/download/v0.1.0/manifest.json",
+        "ml-linux-amd64.tar.gz": "https://github.com/Leemoon228/ai-assistant/releases/download/v0.1.0/ml-linux-amd64.tar.gz",
+        "vulnerabilities.json": "https://github.com/Leemoon228/ai-assistant/releases/download/v0.1.0/vulnerabilities.json"
+      }
+    },
+    "marketplace-mock": {
+      "release_id": 447258941,
+      "release_url": "https://github.com/OlgaRhythm/ai-assistent-marketplace-mock/releases/tag/v0.1.0",
+      "manifest": {
+        "schema_version": 1,
+        "repository": "OlgaRhythm/ai-assistent-marketplace-mock",
+        "tag": "v0.1.0",
+        "revision": "c61dd54b02d1aa0ccb2583e13cd1a9a1fd7dc421",
+        "platform": "linux/amd64",
+        "created_at": "2026-11-16T15:57:06.883570+00:00",
+        "scanner": "aquasec/trivy:0.76.2",
+        "vulnerability_policy": "report-only",
+        "images": [
+          {
+            "service": "marketplace-mock",
+            "image": "ai-assistant-marketplace-mock:v0.1.0",
+            "image_id": "sha256:ffdc65fea322e0f22e0c8e6073358543e242685cbe2d44964a7fd9d390ccd5e1",
+            "archive": "marketplace-mock-linux-amd64.tar.gz",
+            "archive_sha256": "54045ea8b1d645f4e09373ca7f44bf9914f70cdeac720c4e03696d382daaf79b",
+            "sbom": "marketplace-mock-dependencies.cdx.json",
+            "vulnerabilities": "marketplace-mock-vulnerabilities.json"
+          },
+          {
+            "service": "webhook-receiver",
+            "image": "ai-assistant-webhook-receiver:v0.1.0",
+            "image_id": "sha256:ceb4667e69c98f9bf103c6bb87e46d1bf7a909d77da13290bb581818dcdf485a",
+            "archive": "webhook-receiver-linux-amd64.tar.gz",
+            "archive_sha256": "31c93f6515a13e4c61a95defa0514d52af765b1ea05704853ff7bb290c50947f",
+            "sbom": "webhook-receiver-dependencies.cdx.json",
+            "vulnerabilities": "webhook-receiver-vulnerabilities.json"
+          }
+        ]
+      },
+      "checksums": {
+        "README.md": "906e50360d576f52d89ec398b3573ad95cf3d98716168e82b7655bfbd7ed4f72",
+        "compose.image.yml": "1c38ad273902377a8ac0fd7aeb8e407158150f619acdd00f0d644fefc32dccc2",
+        "manifest.json": "7f64b7fa48ca556c78ff12be9e780bc28d455082a855a95ad301c9cffc3de1ed",
+        "marketplace-mock-dependencies.cdx.json": "90ce1bbc3c8e597130c5ad2de0e81db0ec2051768d5e5dbf2b44695b64576f60",
+        "marketplace-mock-linux-amd64.tar.gz": "54045ea8b1d645f4e09373ca7f44bf9914f70cdeac720c4e03696d382daaf79b",
+        "marketplace-mock-vulnerabilities.json": "f7b41073d1a744fe7a22e7c98eb6a9ce755ffabd46789de31ed5f0da91f55ccc",
+        "webhook-receiver-dependencies.cdx.json": "bb78f82139a41ec1b438dc845897bb1b7c3487f6ddff57d0a65214d05b673b4f",
+        "webhook-receiver-linux-amd64.tar.gz": "31c93f6515a13e4c61a95defa0514d52af765b1ea05704853ff7bb290c50947f",
+        "webhook-receiver-vulnerabilities.json": "3309551a1cd35b06ab7379efb5a60f70cbfa4b77275ee947e5d3253b85b512d8"
+      },
+      "assets": {
+        "README.md": "https://github.com/OlgaRhythm/ai-assistent-marketplace-mock/releases/download/v0.1.0/README.md",
+        "compose.image.yml": "https://github.com/OlgaRhythm/ai-assistent-marketplace-mock/releases/download/v0.1.0/compose.image.yml",
+        "manifest.json": "https://github.com/OlgaRhythm/ai-assistent-marketplace-mock/releases/download/v0.1.0/manifest.json",
+        "marketplace-mock-dependencies.cdx.json": "https://github.com/OlgaRhythm/ai-assistent-marketplace-mock/releases/download/v0.1.0/marketplace-mock-dependencies.cdx.json",
+        "marketplace-mock-linux-amd64.tar.gz": "https://github.com/OlgaRhythm/ai-assistent-marketplace-mock/releases/download/v0.1.0/marketplace-mock-linux-amd64.tar.gz",
+        "marketplace-mock-vulnerabilities.json": "https://github.com/OlgaRhythm/ai-assistent-marketplace-mock/releases/download/v0.1.0/marketplace-mock-vulnerabilities.json",
+        "webhook-receiver-dependencies.cdx.json": "https://github.com/OlgaRhythm/ai-assistent-marketplace-mock/releases/download/v0.1.0/webhook-receiver-dependencies.cdx.json",
+        "webhook-receiver-linux-amd64.tar.gz": "https://github.com/OlgaRhythm/ai-assistent-marketplace-mock/releases/download/v0.1.0/webhook-receiver-linux-amd64.tar.gz",
+        "webhook-receiver-vulnerabilities.json": "https://github.com/OlgaRhythm/ai-assistent-marketplace-mock/releases/download/v0.1.0/webhook-receiver-vulnerabilities.json"
+      }
+    }
+  }
+}

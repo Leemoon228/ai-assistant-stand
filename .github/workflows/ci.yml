@@ -74,7 +74,11 @@ jobs:
           if printf '%s\n' "$assets" | grep -qx 'resolution.json'; then
             gh release download "$GITHUB_REF_NAME" --pattern resolution.json --dir "$output"
           else
-            python scripts/assemble.py --resolve --resolution "$output/resolution.json"
+            if [ -f "releases/$GITHUB_REF_NAME.json" ]; then
+              cp "releases/$GITHUB_REF_NAME.json" "$output/resolution.json"
+            else
+              python scripts/assemble.py --resolve --resolution "$output/resolution.json"
+            fi
             gh release upload "$GITHUB_REF_NAME" "$output/resolution.json"
           fi
           echo 'publish=true' >> "$GITHUB_OUTPUT"
